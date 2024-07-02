@@ -9,9 +9,19 @@
 import numpy as np
 import torch
 import os.path as osp
-from config import cfg
-from utils.transforms import transform_joint_to_other_db
+# from config import cfg
+# from utils.transforms import transform_joint_to_other_db
 import smplx
+
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'main')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'common')))
+
+
+from main.config import cfg
+from common.utils.transforms import transform_joint_to_other_db
+
 
 class MANO(object):
     def __init__(self):

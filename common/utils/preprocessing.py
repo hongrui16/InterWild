@@ -9,12 +9,21 @@
 import numpy as np
 import cv2
 import random
-from config import cfg
+# from config import cfg
+
 import math
-from utils.mano import mano
-from utils.transforms import cam2pixel, transform_joint_to_other_db
+
+# from utils.mano import mano
+# from utils.transforms import cam2pixel, transform_joint_to_other_db
 from plyfile import PlyData, PlyElement
 import torch
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'main')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'common')))
+from main.config import cfg
+from common.utils.mano import mano
+from common.utils.transforms import cam2pixel, transform_joint_to_other_db
 
 def load_img(path, order='RGB'):
     img = cv2.imread(path, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)

@@ -19,49 +19,75 @@ import torchvision.transforms as transforms
 from torch.nn.parallel.data_parallel import DataParallel
 import torch.backends.cudnn as cudnn
 
-sys.path.insert(0, osp.join('..', 'main'))
-sys.path.insert(0, osp.join('..', 'data'))
-sys.path.insert(0, osp.join('..', 'common'))
-from config import cfg
-from model import get_model
-from utils.preprocessing import load_img, process_bbox, generate_patch_image, get_iou
-from utils.vis import vis_keypoints_with_skeleton, save_obj, render_mesh_orthogonal
-from utils.mano import mano
+# sys.path.insert(0, osp.join('..', 'main'))
+# sys.path.insert(0, osp.join('..', 'data'))
+# sys.path.insert(0, osp.join('..', 'common'))
+# from config import cfg
+# from model import get_model
+# from utils.preprocessing import load_img, process_bbox, generate_patch_image, get_iou
+# from utils.vis import vis_keypoints_with_skeleton, save_obj, render_mesh_orthogonal
+# from utils.mano import mano
+
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'main')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'common')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# print(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'main')))  # 打印路径以确认
+
+
+from main.config import cfg
+from main.model import get_model
+from common.utils.preprocessing import load_img, process_bbox, generate_patch_image, get_iou
+from common.utils.vis import vis_keypoints_with_skeleton, save_obj, render_mesh_orthogonal
+from common.utils.mano import mano
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', type=str, dest='gpu_ids')
     args = parser.parse_args()
 
-    assert args.gpu_ids, "Please set proper gpu ids"
+    # assert args.gpu_ids, "Please set proper gpu ids"
 
-    if '-' in args.gpu_ids:
-        gpus = args.gpu_ids.split('-')
-        gpus[0] = int(gpus[0])
-        gpus[1] = int(gpus[1]) + 1
-        args.gpu_ids = ','.join(map(lambda x: str(x), list(range(*gpus))))
+    # if '-' in args.gpu_ids:
+    #     gpus = args.gpu_ids.split('-')
+    #     gpus[0] = int(gpus[0])
+    #     gpus[1] = int(gpus[1]) + 1
+    #     args.gpu_ids = ','.join(map(lambda x: str(x), list(range(*gpus))))
     
     return args
 
 args = parse_args()
-cfg.set_args(args.gpu_ids)
-cudnn.benchmark = True
+# cfg.set_args(args.gpu_ids)
+
+if not torch.cuda.is_available():
+    device = torch.device('cpu')
+else:
+    device = torch.device('cuda')
+    cudnn.benchmark = True
+
+
+
 
 # snapshot load
-model_path = './snapshot_6.pth'
+model_path = 'pretrained/snapshot_6.pth'
 assert osp.exists(model_path), 'Cannot find model at ' + model_path
 print('Load checkpoint from {}'.format(model_path))
 model = get_model('test')
-model = DataParallel(model).cuda()
+model = DataParallel(model).to(device=device)
 ckpt = torch.load(model_path)
 model.load_state_dict(ckpt['network'], strict=False)
 model.eval()
 
 # prepare save paths
-input_img_path = './images'
-mesh_save_path = './meshes'
-param_save_path = './params'
-render_save_path = './renders'
+input_img_path = './demo/images'
+# mesh_save_path = './meshes'
+# param_save_path = './params'
+# render_save_path = './renders'
+mesh_save_path = os.path.join('output', 'meshes')
+param_save_path = os.path.join('output', 'params')
+render_save_path = os.path.join('output', 'renders')
+
 os.makedirs(mesh_save_path, exist_ok=True)
 os.makedirs(param_save_path, exist_ok=True)
 os.makedirs(render_save_path, exist_ok=True)
@@ -81,7 +107,7 @@ for img_path in tqdm(img_path_list):
     img, img2bb_trans, bb2img_trans = generate_patch_image(original_img, bbox, 1.0, 0.0, False, cfg.input_img_shape)
     transform = transforms.ToTensor()
     img = transform(img.astype(np.float32))/255
-    img = img.cuda()[None,:,:,:]
+    img = img.to(device=device)[None,:,:,:]
 
     # forward to InterWild
     inputs = {'img': img}
@@ -103,7 +129,7 @@ for img_path in tqdm(img_path_list):
     vis_box = original_img.copy()[:,:,::-1]
     vis_skeleton = original_img.copy()[:,:,::-1]
     prev_depth = None
-    render_out = torch.flip(torch.from_numpy(original_img).float().cuda()[None,:,:,:], [3]) # batch_size, img_height, img_width, 3
+    render_out = torch.flip(torch.from_numpy(original_img).float().to(device=device)[None,:,:,:], [3]) # batch_size, img_height, img_width, 3
     rroot_cam = out['rroot_cam'].cpu().numpy()[0] # 3D position of the right hand root joint (wrist)
     rel_trans = out['rel_trans'].cpu().numpy()[0] # 3D relative translation between two hands
     for h in ('right', 'left'):
@@ -168,8 +194,8 @@ for img_path in tqdm(img_path_list):
 
         # render
         with torch.no_grad():
-            mesh = torch.from_numpy(mesh[None,:,:]).float().cuda()
-            face = torch.from_numpy(mano.face[h][None,:,:].astype(np.int32)).cuda()
+            mesh = torch.from_numpy(mesh[None,:,:]).float().to(device=device)
+            face = torch.from_numpy(mano.face[h][None,:,:].astype(np.int32)).to(device=device)
             render_cam_params = {'focal': render_focal, 'princpt': render_princpt}
             rgb, depth = render_mesh_orthogonal(mesh, face, render_cam_params, (img_height,img_width), h)
         valid_mask = (depth > 0)

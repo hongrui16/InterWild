@@ -11,9 +11,17 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from config import cfg
-os.environ["PYOPENGL_PLATFORM"] = "egl"
 import torch
+
+# from config import cfg
+
+os.environ["PYOPENGL_PLATFORM"] = "egl"
+
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'main')))
+from main.config import cfg
+
 from pytorch3d.structures import Meshes
 from pytorch3d.renderer import (
 PointLights,

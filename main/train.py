@@ -6,11 +6,20 @@
 # 
 
 import argparse
-from config import cfg
 import torch
-from base import Trainer
 import torch.backends.cudnn as cudnn
 from tqdm import tqdm
+import os, sys
+
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'common')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'main')))
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from common.base import Trainer
+from main.config import cfg
+
 
 def parse_args():
     parser = argparse.ArgumentParser()

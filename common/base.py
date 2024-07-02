@@ -14,12 +14,27 @@ import abc
 from torch.utils.data import DataLoader
 import torch.optim
 import torchvision.transforms as transforms
-from timer import Timer
-from logger import colorlogger
 from torch.nn.parallel.data_parallel import DataParallel
-from config import cfg
-from model import get_model
-from dataset import MultipleDatasets
+
+
+# from timer import Timer
+# from logger import colorlogger
+# from config import cfg
+# from model import get_model
+# from dataset import MultipleDatasets
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'main')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'common')))
+
+from common.timer import Timer
+from common.logger import colorlogger
+from main.config import cfg
+from main.model import get_model
+from data.dataset import MultipleDatasets
+
+
 
 # dynamic dataset import
 for i in range(len(cfg.trainset_3d)):

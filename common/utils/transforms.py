@@ -8,8 +8,12 @@
 
 import torch
 import numpy as np
-from config import cfg
 from torch.nn import functional as F
+# from config import cfg
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'main')))
+from main.config import cfg
 
 def cam2pixel(cam_coord, f, c):
     x = cam_coord[:,0] / cam_coord[:,2] * f[0] + c[0]

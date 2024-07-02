@@ -8,7 +8,13 @@
 import random
 import numpy as np
 from torch.utils.data.dataset import Dataset
-from config import cfg
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'main')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'common')))
+
+from main.config import cfg
+
 
 class MultipleDatasets(Dataset):
     def __init__(self, dbs, make_same_len=True):

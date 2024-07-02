@@ -10,8 +10,15 @@ import argparse
 from tqdm import tqdm
 import numpy as np
 import torch.backends.cudnn as cudnn
-from config import cfg
-from base import Tester
+import os, sys
+
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'common')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'main')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from main.config import cfg
+from common.base import Tester
 
 def parse_args():
     parser = argparse.ArgumentParser()

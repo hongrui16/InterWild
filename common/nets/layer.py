@@ -9,7 +9,12 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 import math
-from config import cfg
+# from config import cfg
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'main')))
+from main.config import cfg
+
 
 def make_linear_layers(feat_dims, relu_final=True, use_bn=False):
     layers = []

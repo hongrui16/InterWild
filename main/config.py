@@ -62,23 +62,28 @@ class Config:
     human_model_path = osp.join(root_dir, 'common', 'utils', 'human_model_files')
     
     def set_args(self, gpu_ids, continue_train=False):
-        self.gpu_ids = gpu_ids
-        self.num_gpus = len(self.gpu_ids.split(','))
-        self.continue_train = continue_train
-        os.environ["CUDA_VISIBLE_DEVICES"] = self.gpu_ids
-        print('>>> Using GPU: {}'.format(self.gpu_ids))
+        # self.gpu_ids = gpu_ids
+        # self.num_gpus = len(self.gpu_ids.split(','))
+        # self.continue_train = continue_train
+        # os.environ["CUDA_VISIBLE_DEVICES"] = self.gpu_ids
+        # print('>>> Using GPU: {}'.format(self.gpu_ids))
+        pass
 
 cfg = Config()
 
-sys.path.insert(0, osp.join(cfg.root_dir, 'common'))
-from utils.dir import add_pypath, make_folder
+# sys.path.insert(0, osp.join(cfg.root_dir, 'common'))
+import os, sys
+
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'common')))
+
+from common.utils.dir import add_pypath, make_folder
 add_pypath(osp.join(cfg.data_dir))
 for i in range(len(cfg.trainset_3d)):
     add_pypath(osp.join(cfg.data_dir, cfg.trainset_3d[i]))
 for i in range(len(cfg.trainset_2d)):
     add_pypath(osp.join(cfg.data_dir, cfg.trainset_2d[i]))
 add_pypath(osp.join(cfg.data_dir, cfg.testset))
-make_folder(cfg.model_dir)
-make_folder(cfg.vis_dir)
-make_folder(cfg.log_dir)
-make_folder(cfg.result_dir)
+# make_folder(cfg.model_dir)
+# make_folder(cfg.vis_dir)
+# make_folder(cfg.log_dir)
+# make_folder(cfg.result_dir)

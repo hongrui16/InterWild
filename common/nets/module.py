@@ -9,13 +9,26 @@ import torch
 import torch.nn as nn
 import torchvision
 from torch.nn import functional as F
-from nets.layer import make_conv_layers, make_deconv_layers, make_linear_layers
-from utils.mano import mano
-from utils.transforms import sample_joint_features, soft_argmax_2d, soft_argmax_3d
-from pytorch3d.transforms import rotation_6d_to_matrix, matrix_to_axis_angle
+# from nets.layer import make_conv_layers, make_deconv_layers, make_linear_layers
+# from utils.mano import mano
+# from utils.transforms import sample_joint_features, soft_argmax_2d, soft_argmax_3d
+# from config import cfg
+
 import kornia
 import math
-from config import cfg
+
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'main')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'common')))
+
+from main.config import cfg
+from common.nets.layer import make_conv_layers, make_deconv_layers, make_linear_layers
+from common.utils.transforms import sample_joint_features, soft_argmax_2d, soft_argmax_3d
+from common.utils.mano import mano
+
+from pytorch3d.transforms import rotation_6d_to_matrix, matrix_to_axis_angle
+
 
 class PositionNet(nn.Module):
     def __init__(self):

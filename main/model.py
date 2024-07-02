@@ -8,13 +8,20 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-from nets.resnet import ResNetBackbone
-from nets.module import BoxNet, HandRoI, PositionNet, RotationNet, TransNet
-from nets.loss import CoordLoss, PoseLoss
-from utils.mano import mano
-from utils.transforms import restore_bbox
-from config import cfg
+
 import copy
+import os, sys
+
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'common')))
+
+from common.nets.resnet import ResNetBackbone
+from common.nets.module import BoxNet, HandRoI, PositionNet, RotationNet, TransNet
+from common.nets.loss import CoordLoss, PoseLoss
+from common.utils.mano import mano
+from common.utils.transforms import restore_bbox
+
+from main.config import cfg
 
 class Model(nn.Module):
     def __init__(self, body_backbone, body_box_net, hand_roi_net, hand_position_net, hand_rotation_net, hand_trans_net):

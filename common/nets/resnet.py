@@ -8,8 +8,12 @@
 import torch
 import torch.nn as nn
 from torchvision.models.resnet import BasicBlock, Bottleneck, ResNet18_Weights, ResNet50_Weights
-from config import cfg
 import os.path as osp
+
+
+import os, sys
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'main')))
+from main.config import cfg
 
 class ResNetBackbone(nn.Module):
 
